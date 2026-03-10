@@ -2,7 +2,7 @@
   "name": "現場計算ツール Pro",
   "short_name": "現場計算",
   "description": "食品工場の計算・使用率レポートツール",
-  "start_url": "./index.html"
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fff9e6",
   "theme_color": "#ff8c00",
@@ -18,5 +18,4 @@
       "type": "image/png"
     }
   ]
-
 }
