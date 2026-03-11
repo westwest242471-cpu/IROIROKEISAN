@@ -56,7 +56,7 @@
 
   .input-group { margin-bottom: 4px; }
   .input-group label { display: block; font-size: 0.7rem; font-weight: bold; margin-bottom: 2px; color: #8d6e63; }
-  input { width: 100%; font-size: 14px; padding: 7px; border: 2px solid #eee; border-radius: 8px; outline: none; box-sizing: border-box; }
+  input { width: 100%; font-size: 16px; padding: 7px; border: 2px solid #eee; border-radius: 8px; outline: none; box-sizing: border-box; }
   input:focus { border-color: var(--primary-color); background: #fffdf0; }
 
   .manual-input { background: #fffdf0; border: 2px solid #f1c40f; }
@@ -155,7 +155,7 @@ function calcAll() {
     document.getElementById("res5-box").style.display = "flex";
   } else document.getElementById("res5-box").style.display = "none";
 
-  // ④ 必要バット
+  // ④ バット
   const m4 = parseFloat(document.getElementById("meals").value);
   const pm4 = parseFloat(document.getElementById("perMeal").value);
   const pv4 = parseFloat(document.getElementById("perVat").value);
@@ -174,14 +174,13 @@ function calcAll() {
     document.getElementById("res3-box").style.display = "flex";
   } else document.getElementById("res3-box").style.display = "none";
 
-  // ⑥ 使用率 (ハイブリッド機能復元)
+  // ⑥ 使用率
   const uM = parseFloat(document.getElementById("useMeals").value);
   const kM = parseFloat(document.getElementById("kgPerMeal").value);
   const mR = parseFloat(document.getElementById("manualReq").value);
   const pK = parseFloat(document.getElementById("paidKg").value);
   const lK = parseFloat(document.getElementById("leftKg").value) || 0;
   const aK = parseFloat(document.getElementById("addKg").value) || 0;
-  
   let finalReq = !isNaN(mR) ? mR : (uM * kM);
   if (finalReq > 0 && !isNaN(pK)) {
     const act = pK + aK - lK;
@@ -199,7 +198,28 @@ function appendCalc(v) { calcExp += v; document.getElementById("calc-display").i
 function clearCalc() { calcExp = ""; document.getElementById("calc-display").innerText = "0"; }
 function calcResult() { try { calcExp = eval(calcExp).toString(); document.getElementById("calc-display").innerText = calcExp; } catch { clearCalc(); } }
 
-document.querySelectorAll("input").forEach(i => i.addEventListener("input", calcAll));
+// --- 入力制御 (Enterで次へ移動) ---
+const inputs = Array.from(document.querySelectorAll("input"));
+inputs.forEach((input, index) => {
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const next = inputs[index + 1];
+      if (next) {
+        // 次の入力が閉じているセクション内にある場合、自動で開く
+        const parentSection = next.closest(".section");
+        if (parentSection && !parentSection.classList.contains("open")) {
+          parentSection.classList.add("open");
+        }
+        next.focus();
+      } else {
+        input.blur(); // 最後ならキーボードを閉じる
+      }
+    }
+  });
+  input.addEventListener("input", calcAll);
+});
+
 window.onload = () => { load(); calcAll(); };
 
 if ('service-worker' in navigator) {
