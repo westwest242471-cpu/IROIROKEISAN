@@ -2,12 +2,18 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>現場計算ツール Pro - Screenshot Master</title>
+<title>現場計算ツール Pro</title>
 <link rel="manifest" href="manifest.json">
-<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <style>
+  /* ★スワイプでの更新（引っ張って更新）を禁止する */
+  html, body {
+    overscroll-behavior-y: contain;
+    overflow-x: hidden;
+  }
+
   :root {
     --primary-color: #ff8c00; 
     --bg-color: #fff9e6; 
@@ -21,11 +27,10 @@
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0; padding: 10px; padding-bottom: 60px;
-    position: relative;
-    min-height: 100vh;
+    -webkit-touch-callout: none; /* 長押しメニュー禁止 */
   }
 
-  /* --- キャラクター背景（文字化け対策済みコード） --- */
+  /* --- 以下、以前のスタイルをそのまま維持 --- */
   .char { position: fixed; font-size: 2rem; z-index: -1; opacity: 0.4; pointer-events: none; }
   @keyframes float {
     0%, 100% { transform: translate(0, 0) rotate(0deg); }
@@ -33,45 +38,21 @@
   }
   .c1 { top: 10%; left: 5%; animation: float 6s infinite ease-in-out; }
   .c2 { top: 50%; right: 5%; animation: float 8s infinite ease-in-out; }
-
   h1 { text-align: center; font-size: 1.2rem; color: var(--primary-color); margin: 10px 0; }
-
-  .section {
-    background: var(--card-bg); border-radius: 15px; box-shadow: 0 3px 0 var(--border-color);
-    margin-bottom: 8px; overflow: hidden; border: 2px solid var(--border-color);
-  }
-
-  .section h2 {
-    margin: 0; padding: 10px 15px; font-size: 0.95rem; background: #fff; cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center; color: var(--primary-color);
-  }
-
+  .section { background: var(--card-bg); border-radius: 15px; box-shadow: 0 3px 0 var(--border-color); margin-bottom: 8px; overflow: hidden; border: 2px solid var(--border-color); }
+  .section h2 { margin: 0; padding: 10px 15px; font-size: 0.95rem; background: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--primary-color); }
   .content { display: none; padding: 8px; border-top: 1px solid var(--border-color); background: #fff; }
   .section.open .content { display: block; }
-
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 6px; }
-
   .input-group { margin-bottom: 4px; }
   .input-group label { display: block; font-size: 0.7rem; font-weight: bold; margin-bottom: 2px; color: #8d6e63; }
-  
-  input { 
-    width: 100%; font-size: 14px; padding: 7px; border: 2px solid #eee; 
-    border-radius: 8px; outline: none; box-sizing: border-box; background: #fdfdfd;
-  }
+  input { width: 100%; font-size: 16px; padding: 7px; border: 2px solid #eee; border-radius: 8px; outline: none; box-sizing: border-box; background: #fdfdfd; }
   input:focus { border-color: var(--primary-color); background: #fffdf0; }
-
   .manual-input { background: #fffdf0; border: 2px solid #f1c40f; }
-
-  .res-box-screenshot {
-    background: #fff4e5; padding: 10px; border-radius: 12px; margin-top: 5px;
-    border: 2px dashed var(--primary-color); display: flex; justify-content: space-around; align-items: center;
-  }
-  .res-item { text-align: center; }
-  .res-label { font-size: 0.6rem; color: #a0522d; margin-bottom: 2px; }
+  .res-box-screenshot { background: #fff4e5; padding: 10px; border-radius: 12px; margin-top: 5px; border: 2px dashed var(--primary-color); display: flex; justify-content: space-around; align-items: center; }
   .res-val { font-size: 0.95rem; font-weight: bold; color: #d35400; }
   .highlight { color: #e74c3c; font-size: 1.2rem; border-bottom: 2px solid; }
-
   .calc-container { max-width: 280px; margin: 5px auto; background: #ffcc80; padding: 8px; border-radius: 15px; }
   #calc-display { width: 100%; height: 40px; background: #fff; text-align: right; font-size: 20px; padding: 5px; border-radius: 8px; margin-bottom: 8px; border: 2px solid #ffb74d; box-sizing: border-box; }
   .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
@@ -82,14 +63,17 @@
 </head>
 <body>
 
-<div class="char c1">&#x1F359;</div> <div class="char c2">&#x1F364;</div> <h1>食品工場計算ツール &#x1F359;</h1>
+<div class="char c1">&#x1F359;</div>
+<div class="char c2">&#x1F364;</div>
+
+<h1>現場計算ツール &#x1F359;</h1>
 
 <div class="section">
   <h2 onclick="toggle(this)">① 終了予定・所要時間 &#x231B;</h2>
   <div class="content">
     <div class="grid-2">
       <div class="input-group"><label>製造数</label><input type="number" id="targetQty"></div>
-      <div class="input-group"><label>能力</label><input type="number" id="speedPerHour"></div>
+      <div class="input-group"><label>生産性</label><input type="number" id="speedPerHour"></div>
     </div>
     <div class="res-box-screenshot" id="res6-box" style="display:none;">
       <div id="result6" class="res-val" style="width:100%"></div>
@@ -97,88 +81,31 @@
   </div>
 </div>
 
-<div class="section">
-  <h2 onclick="toggle(this)">② 生産性実績 &#x23F1;</h2>
+<div class="section open">
+  <h2 onclick="toggle(this)">② 使用率レポート &#x1F4C8;</h2>
   <div class="content">
-    <div class="grid-3">
-      <div class="input-group"><label>製造数</label><input type="number" id="qty"></div>
-      <div class="input-group"><label>開始</label><input type="time" id="start"></div>
-      <div class="input-group"><label>終了</label><input type="time" id="end"></div>
-    </div>
-    <div class="res-box-screenshot" id="res1-box" style="display:none;">
-      <div id="result1" class="res-val"></div>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <h2 onclick="toggle(this)">③ タマドリ &#x1F4E6;</h2>
-  <div class="content">
-    <div class="grid-2">
-      <div class="input-group"><label>総数(個)</label><input type="number" id="tamaTotal"></div>
-      <div class="input-group"><label>入り数</label><input type="number" id="tamaPerVat"></div>
-    </div>
-    <div class="res-box-screenshot" id="res5-box" style="display:none;">
-      <div id="result5" class="res-val"></div>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <h2 onclick="toggle(this)">④ 必要バット数 &#x2696;</h2>
-  <div class="content">
-    <div class="grid-3">
-      <div class="input-group"><label>予定食数</label><input type="number" id="meals"></div>
-      <div class="input-group"><label>1食量</label><input type="number" id="perMeal" step="0.001"></div>
-      <div class="input-group"><label>バット規定</label><input type="number" id="perVat" step="0.01"></div>
-    </div>
-    <div class="res-box-screenshot" id="res2-box" style="display:none;">
-      <div id="result2" class="res-val"></div>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <h2 onclick="toggle(this)">⑤ 在庫・総数 &#x1F522;</h2>
-  <div class="content">
-    <div class="grid-3">
-      <div class="input-group"><label>バット枚数</label><input type="number" id="vatCount"></div>
-      <div class="input-group"><label>1枚量</label><input type="number" id="inPerVat"></div>
-      <div class="input-group"><label>端数</label><input type="number" id="extraCount"></div>
-    </div>
-    <div class="res-box-screenshot" id="res3-box" style="display:none;">
-      <div id="result3" class="res-val"></div>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <h2 onclick="toggle(this)">⑥ 使用率レポート（スクショ用） &#x1F4C8;</h2>
-  <div class="content" style="background: #fffdf9;">
     <div class="grid-2">
       <div class="input-group"><label>品名</label><input type="text" id="itemName"></div>
       <div class="input-group"><label>具材</label><input type="text" id="ingName"></div>
     </div>
     <div class="grid-3">
-      <div class="input-group"><label>製造数(食)</label><input type="number" id="useMeals"></div>
+      <div class="input-group"><label>製造数</label><input type="number" id="useMeals"></div>
       <div class="input-group"><label>規格(kg/個)</label><input type="number" id="kgPerMeal" step="0.001"></div>
-      <div class="input-group"><label style="color:#d35400">理論必要量</label><input type="number" id="manualReq" step="0.001" class="manual-input" placeholder="手入力可"></div>
+      <div class="input-group"><label style="color:#d35400">理論量</label><input type="number" id="manualReq" step="0.001" class="manual-input"></div>
     </div>
     <div class="grid-3">
-      <div class="input-group"><label>払出(kg)</label><input type="number" id="paidKg" step="0.01"></div>
-      <div class="input-group"><label>余り(kg)</label><input type="number" id="leftKg" step="0.01"></div>
-      <div class="input-group"><label>追加(kg)</label><input type="number" id="addKg" step="0.01"></div>
+      <div class="input-group"><label>払出(kg/個)</label><input type="number" id="paidKg" step="0.01"></div>
+      <div class="input-group"><label>余り(kg/個)</label><input type="number" id="leftKg" step="0.01"></div>
+      <div class="input-group"><label>追加(kg/個)</label><input type="number" id="addKg" step="0.01"></div>
     </div>
     <div class="res-box-screenshot" id="res4-box" style="display:none;">
-      <div class="res-item"><div class="res-label">理論必要量</div><div id="displayReq" class="res-val"></div></div>
-      <div class="res-item"><div class="res-label">実使用量</div><div id="actVal" class="res-val"></div></div>
-      <div class="res-item"><div class="res-label">使用率</div><div id="rateVal" class="highlight"></div></div>
+      <div class="res-val" id="rateVal" style="font-size:1.5rem"></div>
     </div>
   </div>
 </div>
 
 <div class="section">
-  <h2 onclick="toggle(this)">⑦ 電卓 &#x1F4F1;</h2>
+  <h2 onclick="toggle(this)">③ 電卓 &#x1F4F1;</h2>
   <div class="content">
     <div class="calc-container">
       <div id="calc-display">0</div>
@@ -211,7 +138,6 @@ function save() { document.querySelectorAll("input").forEach(i => localStorage.s
 function load() { document.querySelectorAll("input").forEach(i => { if(localStorage.getItem(i.id)) i.value = localStorage.getItem(i.id); }); }
 
 function calcAll() {
-  // ① 終了予定
   const tQty = parseFloat(document.getElementById("targetQty").value);
   const speed = parseFloat(document.getElementById("speedPerHour").value);
   if (tQty && speed > 0) {
@@ -221,49 +147,6 @@ function calcAll() {
     document.getElementById("res6-box").style.display = "flex";
   } else document.getElementById("res6-box").style.display = "none";
 
-  // ② 生産性
-  const r1 = document.getElementById("res1-box");
-  const q = parseFloat(document.getElementById("qty").value);
-  const sT = document.getElementById("start").value;
-  const eT = document.getElementById("end").value;
-  if (!isNaN(q) && sT && eT) {
-    const [sh, sm] = sT.split(":").map(Number);
-    const [eh, em] = eT.split(":").map(Number);
-    let diff = (eh * 60 + em) - (sh * 60 + sm);
-    if (diff <= 0) diff += 1440;
-    document.getElementById("result1").innerHTML = `生産性: <span class="highlight">${(q / (diff / 60)).toFixed(1)}</span> 食 / h`;
-    r1.style.display = "flex";
-  } else r1.style.display = "none";
-
-  // ③ タマドリ
-  const tt = parseInt(document.getElementById("tamaTotal").value);
-  const tp = parseInt(document.getElementById("tamaPerVat").value);
-  if (tt && tp > 0) {
-    document.getElementById("result5").innerHTML = `満杯: <span class="highlight">${Math.floor(tt/tp)}</span> 枚 / 端: <span class="highlight">${tt%tp}</span>`;
-    document.getElementById("res5-box").style.display = "flex";
-  } else document.getElementById("res5-box").style.display = "none";
-
-  // ④ 必要バット
-  const m = parseFloat(document.getElementById("meals").value);
-  const pm = parseFloat(document.getElementById("perMeal").value);
-  const pv = parseFloat(document.getElementById("perVat").value);
-  if (m && pm && pv > 0) {
-    const tot = m * pm;
-    document.getElementById("result2").innerHTML = `総量:${tot.toFixed(2)}kg / 必要:<span class="highlight">${(Math.ceil((tot/pv)*10)/10).toFixed(1)}</span>枚`;
-    document.getElementById("res2-box").style.display = "flex";
-  } else document.getElementById("res2-box").style.display = "none";
-
-  // ⑤ 在庫
-  const vc = parseFloat(document.getElementById("vatCount").value);
-  const ipv = parseFloat(document.getElementById("inPerVat").value);
-  const ex = parseFloat(document.getElementById("extraCount").value) || 0;
-  if (vc && ipv) {
-    const tot = (vc * ipv) + ex;
-    document.getElementById("result3").innerHTML = `合計: <span class="highlight">${tot.toFixed(2)}</span> kg/個`;
-    document.getElementById("res3-box").style.display = "flex";
-  } else document.getElementById("res3-box").style.display = "none";
-
-  // ⑥ 使用率
   const uM = parseFloat(document.getElementById("useMeals").value);
   const kM = parseFloat(document.getElementById("kgPerMeal").value);
   const mR = parseFloat(document.getElementById("manualReq").value);
@@ -273,22 +156,16 @@ function calcAll() {
   let finalReq = !isNaN(mR) ? mR : (uM * kM);
   if (finalReq > 0 && !isNaN(pK)) {
     const act = pK + aK - lK;
-    document.getElementById("displayReq").textContent = finalReq.toFixed(3);
-    document.getElementById("actVal").textContent = act.toFixed(3);
-    document.getElementById("rateVal").textContent = ((act/finalReq)*100).toFixed(1) + "%";
+    document.getElementById("rateVal").textContent = "使用率: " + ((act/finalReq)*100).toFixed(1) + "%";
     document.getElementById("res4-box").style.display = "flex";
   } else document.getElementById("res4-box").style.display = "none";
-
   save();
 }
 
 let calcExp = "";
 function appendCalc(v) { calcExp += v; document.getElementById("calc-display").innerText = calcExp; }
 function clearCalc() { calcExp = ""; document.getElementById("calc-display").innerText = "0"; }
-function calcResult() {
-  try { calcExp = eval(calcExp).toString(); document.getElementById("calc-display").innerText = calcExp; }
-  catch { document.getElementById("calc-display").innerText = "Error"; calcExp = ""; }
-}
+function calcResult() { try { calcExp = eval(calcExp).toString(); document.getElementById("calc-display").innerText = calcExp; } catch { document.getElementById("calc-display").innerText = "Error"; calcExp = ""; } }
 
 document.querySelectorAll("input").forEach(i => i.addEventListener("input", calcAll));
 window.onload = () => { load(); calcAll(); };
@@ -296,13 +173,11 @@ window.onload = () => { load(); calcAll(); };
 // Service Worker登録
 if ('service-worker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(reg => console.log('SW registered!', reg))
-      .catch(err => console.error('SW failed:', err));
+    navigator.serviceWorker.register('./service-worker.js').then(reg => {
+      console.log('Offline Ready!');
+    });
   });
 }
 </script>
 </body>
 </html>
-
-
