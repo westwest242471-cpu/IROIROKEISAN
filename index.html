@@ -68,6 +68,7 @@
   .res-item { text-align: center; }
   .res-label { font-size: 0.6rem; color: #a0522d; margin-bottom: 2px; }
   .res-val { font-size: 0.95rem; font-weight: bold; color: #d35400; }
+  .unit { font-size: 0.7rem; color: #8d6e63; margin-left: 2px; font-weight: normal; }
   .highlight { color: #e74c3c; font-size: 1.1rem; border-bottom: 2px solid; }
 
   /* 電卓 */
@@ -126,6 +127,12 @@ function toggle(e) { e.parentElement.classList.toggle("open"); }
 function save() { document.querySelectorAll("input").forEach(i => localStorage.setItem(i.id, i.value)); }
 function load() { document.querySelectorAll("input").forEach(i => { if(localStorage.getItem(i.id)) i.value = localStorage.getItem(i.id); }); }
 
+// 数値フォーマット関数: 小数点があれば2桁まで、なければ整数
+function fmt(num) {
+  if (isNaN(num)) return "0";
+  return Number(Math.round(num + "e2") + "e-2").toString();
+}
+
 function calcAll() {
   // ① 終了予定
   const tQ = parseFloat(document.getElementById("targetQty").value);
@@ -143,7 +150,7 @@ function calcAll() {
   if (q2 && sT && eT) {
     const [sh, sm] = sT.split(":").map(Number); const [eh, em] = eT.split(":").map(Number);
     let diff = (eh * 60 + em) - (sh * 60 + sm); if (diff <= 0) diff += 1440;
-    document.getElementById("result1").innerHTML = `生産性: <span class="highlight">${(q2 / (diff / 60)).toFixed(1)}</span> 食/h`;
+    document.getElementById("result1").innerHTML = `生産性: <span class="highlight">${fmt(q2 / (diff / 60))}</span> 食/h`;
     document.getElementById("res1-box").style.display = "flex";
   } else document.getElementById("res1-box").style.display = "none";
 
@@ -155,13 +162,13 @@ function calcAll() {
     document.getElementById("res5-box").style.display = "flex";
   } else document.getElementById("res5-box").style.display = "none";
 
-  // ④ バット
+  // ④ 必要バット
   const m4 = parseFloat(document.getElementById("meals").value);
   const pm4 = parseFloat(document.getElementById("perMeal").value);
   const pv4 = parseFloat(document.getElementById("perVat").value);
   if (m4 && pm4 && pv4 > 0) {
     const tot = m4 * pm4;
-    document.getElementById("result2").innerHTML = `総量:${tot.toFixed(2)} / 必要:<span class="highlight">${(Math.ceil((tot/pv4)*10)/10).toFixed(1)}</span>枚`;
+    document.getElementById("result2").innerHTML = `総量:${fmt(tot)} / 必要:<span class="highlight">${fmt(Math.ceil((tot/pv4)*10)/10)}</span>枚`;
     document.getElementById("res2-box").style.display = "flex";
   } else document.getElementById("res2-box").style.display = "none";
 
@@ -170,12 +177,12 @@ function calcAll() {
   const ipv5 = parseFloat(document.getElementById("inPerVat").value);
   const ex5 = parseFloat(document.getElementById("extraCount").value) || 0;
   if (vc5 && ipv5) {
-    document.getElementById("result3").innerHTML = `合計: <span class="highlight">${(vc5 * ipv5 + ex5).toFixed(2)}</span> kg/個`;
+    document.getElementById("result3").innerHTML = `合計: <span class="highlight">${fmt(vc5 * ipv5 + ex5)}</span> kg/個`;
     document.getElementById("res3-box").style.display = "flex";
   } else document.getElementById("res3-box").style.display = "none";
 
   // ⑥ 使用率
-const uM = parseFloat(document.getElementById("useMeals").value);
+  const uM = parseFloat(document.getElementById("useMeals").value);
   const kM = parseFloat(document.getElementById("kgPerMeal").value);
   const mR = parseFloat(document.getElementById("manualReq").value);
   const pK = parseFloat(document.getElementById("paidKg").value);
@@ -184,10 +191,9 @@ const uM = parseFloat(document.getElementById("useMeals").value);
   let finalReq = !isNaN(mR) ? mR : (uM * kM);
   if (finalReq > 0 && !isNaN(pK)) {
     const act = pK + aK - lK;
-    // 結果の数字のうしろに単位を追加
-    document.getElementById("displayReq").innerHTML = `${finalReq.toFixed(3)}<span class="unit">kg/個</span>`;
-    document.getElementById("actVal").innerHTML = `${act.toFixed(3)}<span class="unit">kg/個</span>`;
-    document.getElementById("rateVal").textContent = ((act/finalReq)*100).toFixed(1) + "%";
+    document.getElementById("displayReq").innerHTML = `${fmt(finalReq)}<span class="unit">kg/個</span>`;
+    document.getElementById("actVal").innerHTML = `${fmt(act)}<span class="unit">kg/個</span>`;
+    document.getElementById("rateVal").textContent = fmt((act/finalReq)*100) + "%";
     document.getElementById("res4-box").style.display = "flex";
   } else document.getElementById("res4-box").style.display = "none";
   save();
@@ -206,14 +212,13 @@ inputs.forEach((input, index) => {
       e.preventDefault();
       const next = inputs[index + 1];
       if (next) {
-        // 次の入力が閉じているセクション内にある場合、自動で開く
         const parentSection = next.closest(".section");
         if (parentSection && !parentSection.classList.contains("open")) {
           parentSection.classList.add("open");
         }
         next.focus();
       } else {
-        input.blur(); // 最後ならキーボードを閉じる
+        input.blur();
       }
     }
   });
@@ -228,5 +233,3 @@ if ('service-worker' in navigator) {
 </script>
 </body>
 </html>
-
-
