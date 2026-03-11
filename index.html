@@ -185,8 +185,8 @@ const uM = parseFloat(document.getElementById("useMeals").value);
   if (finalReq > 0 && !isNaN(pK)) {
     const act = pK + aK - lK;
     // 結果の数字のうしろに単位を追加
-    document.getElementById("displayReq").innerHTML = `${finalReq.toFixed(3)}<span class="unit">(kg/個)</span>`;
-    document.getElementById("actVal").innerHTML = `${act.toFixed(3)}<span class="unit">kg</span>`;
+    document.getElementById("displayReq").innerHTML = `${finalReq.toFixed(3)}<span class="unit">kg/個</span>`;
+    document.getElementById("actVal").innerHTML = `${act.toFixed(3)}<span class="unit">kg/個</span>`;
     document.getElementById("rateVal").textContent = ((act/finalReq)*100).toFixed(1) + "%";
     document.getElementById("res4-box").style.display = "flex";
   } else document.getElementById("res4-box").style.display = "none";
@@ -228,4 +228,5 @@ if ('service-worker' in navigator) {
 </script>
 </body>
 </html>
+
 
