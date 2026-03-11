@@ -1,4 +1,4 @@
-const CACHE_NAME = 'genba-calc-v3';
+const CACHE_NAME = 'genba-calc-v4';
 const urlsToCache = [
   './',
   './index.html',
@@ -39,3 +39,4 @@ self.addEventListener('activate', (event) => {
     })
   );
 });
+
