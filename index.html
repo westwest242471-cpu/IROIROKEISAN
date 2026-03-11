@@ -103,13 +103,13 @@
     </div>
     <div class="grid-3">
       <div class="input-group"><label>製造数(食)</label><input type="number" id="useMeals"></div>
-      <div class="input-group"><label>規格(kg)</label><input type="number" id="kgPerMeal" step="0.001"></div>
-      <div class="input-group"><label style="color:#d35400">理論必要量</label><input type="number" id="manualReq" step="0.001" class="manual-input" placeholder="手入力優先"></div>
+      <div class="input-group"><label>1食(kg/個)</label><input type="number" id="kgPerMeal" step="0.001"></div>
+      <div class="input-group"><label style="color:#d35400">理論必要量(kg/個)</label><input type="number" id="manualReq" step="0.001" class="manual-input" placeholder="手入力優先"></div>
     </div>
     <div class="grid-3">
-      <div class="input-group"><label>払出(kg)</label><input type="number" id="paidKg" step="0.01"></div>
-      <div class="input-group"><label>余り(kg)</label><input type="number" id="leftKg" step="0.01"></div>
-      <div class="input-group"><label>追加(kg)</label><input type="number" id="addKg" step="0.01"></div>
+      <div class="input-group"><label>払出(kg/個)</label><input type="number" id="paidKg" step="0.01"></div>
+      <div class="input-group"><label>余り(kg/個)</label><input type="number" id="leftKg" step="0.01"></div>
+      <div class="input-group"><label>追加(kg/個)</label><input type="number" id="addKg" step="0.01"></div>
     </div>
     <div class="res-box-screenshot" id="res4-box" style="display:none;">
       <div class="res-item"><div class="res-label">理論必要量</div><div id="displayReq" class="res-val"></div></div>
@@ -175,7 +175,7 @@ function calcAll() {
   } else document.getElementById("res3-box").style.display = "none";
 
   // ⑥ 使用率
-  const uM = parseFloat(document.getElementById("useMeals").value);
+const uM = parseFloat(document.getElementById("useMeals").value);
   const kM = parseFloat(document.getElementById("kgPerMeal").value);
   const mR = parseFloat(document.getElementById("manualReq").value);
   const pK = parseFloat(document.getElementById("paidKg").value);
@@ -184,12 +184,12 @@ function calcAll() {
   let finalReq = !isNaN(mR) ? mR : (uM * kM);
   if (finalReq > 0 && !isNaN(pK)) {
     const act = pK + aK - lK;
-    document.getElementById("displayReq").textContent = finalReq.toFixed(3);
-    document.getElementById("actVal").textContent = act.toFixed(3);
+    // 結果の数字のうしろに単位を追加
+    document.getElementById("displayReq").innerHTML = `${finalReq.toFixed(3)}<span class="unit">(kg/個)</span>`;
+    document.getElementById("actVal").innerHTML = `${act.toFixed(3)}<span class="unit">kg</span>`;
     document.getElementById("rateVal").textContent = ((act/finalReq)*100).toFixed(1) + "%";
     document.getElementById("res4-box").style.display = "flex";
   } else document.getElementById("res4-box").style.display = "none";
-
   save();
 }
 
@@ -228,3 +228,4 @@ if ('service-worker' in navigator) {
 </script>
 </body>
 </html>
+
