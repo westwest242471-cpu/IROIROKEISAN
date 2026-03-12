@@ -75,8 +75,8 @@
   .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
   .calc-btn { height: 40px; font-size: 16px; font-weight: bold; border-radius: 8px; border: none; background: #fff; color: #ff8c00; box-shadow: 0 2px 0 #ffe082; }
 
-  .reset-area { text-align: center; margin-top: 20px; }
-  .reset-btn { background: #ff5252; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; box-shadow: 0 3px 0 #c0392b; cursor: pointer; }
+  .reset-area { text-align: center; margin-top: 20px; padding-bottom: 20px; }
+  .reset-btn { background: #ff5252; color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 0 #c0392b; cursor: pointer; }
   .reset-btn:active { transform: translateY(2px); box-shadow: none; }
 </style>
 </head>
@@ -129,12 +129,9 @@ function toggle(e) { e.parentElement.classList.toggle("open"); }
 function save() { document.querySelectorAll("input").forEach(i => localStorage.setItem(i.id, i.value)); }
 function load() { document.querySelectorAll("input").forEach(i => { if(localStorage.getItem(i.id)) i.value = localStorage.getItem(i.id); }); }
 
-// 切り捨て小数点2桁フォーマット
 function fmt(num) {
   if (isNaN(num) || num === Infinity) return "0";
-  // 小数点第3位以下を切り捨て
   const truncated = Math.floor(num * 100) / 100;
-  // 整数ならそのまま、小数があれば表示
   return Number(truncated).toString();
 }
 
@@ -234,7 +231,7 @@ inputs.forEach((input, index) => {
 window.onload = () => { load(); calcAll(); };
 
 if ('service-worker' in navigator) {
-  window.addEventListener('load', () => { navigator.worker.register('./service-worker.js'); });
+  window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
 }
 </script>
 </body>
