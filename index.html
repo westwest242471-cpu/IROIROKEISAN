@@ -82,10 +82,11 @@
   .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
   .calc-btn { height: 40px; font-size: 16px; font-weight: bold; border-radius: 8px; border: none; background: #fff; color: #ff8c00; box-shadow: 0 2px 0 #ffe082; }
 
-  /* リセットボタンエリア */
+  /* リセット・インストールボタンエリア */
   .reset-area { text-align: center; margin-top: 20px; padding-bottom: 20px; }
   .reset-btn { background: #ff5252; color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 0 #c0392b; cursor: pointer; transition: 0.2s; }
   .reset-btn:active { transform: scale(0.95); box-shadow: none; }
+  .install-btn { background: #27ae60; box-shadow: 0 4px 0 #1e8449; margin-bottom: 15px; }
 
   /* --- 可愛いリセットモーダル --- */
   #modal-overlay {
@@ -149,6 +150,8 @@
 <div class="section"><h2 onclick="toggle(this)">⑦ 電卓 &#x1F4F1;</h2><div class="content"><div class="calc-container"><div id="calc-display">0</div><div class="calc-buttons"><button class="calc-btn" style="background:#ff5252;color:#fff" onclick="clearCalc()">C</button><button class="calc-btn" onclick="appendCalc('/')">/</button><button class="calc-btn" onclick="appendCalc('*')">*</button><button class="calc-btn" onclick="appendCalc('-')">-</button><button class="calc-btn" onclick="appendCalc('7')">7</button><button class="calc-btn" onclick="appendCalc('8')">8</button><button class="calc-btn" onclick="appendCalc('9')">9</button><button class="calc-btn" onclick="appendCalc('+')">+</button><button class="calc-btn" onclick="appendCalc('4')">4</button><button class="calc-btn" onclick="appendCalc('5')">5</button><button class="calc-btn" onclick="appendCalc('6')">6</button><button class="calc-btn" style="background:#ff8c00;color:#fff;grid-row:span 2;height:84px" onclick="calcResult()">=</button><button class="calc-btn" onclick="appendCalc('1')">1</button><button class="calc-btn" onclick="appendCalc('2')">2</button><button class="calc-btn" onclick="appendCalc('3')">3</button><button class="calc-btn" style="grid-column:span 2" onclick="appendCalc('0')">0</button><button class="calc-btn" onclick="appendCalc('.')">.</button></div></div></div></div>
 
 <div class="reset-area">
+  <button id="install-btn" class="reset-btn install-btn" style="display:none;">アプリをホーム画面に追加 📲</button>
+  <br>
   <button class="reset-btn" onclick="showModal()">データを全消去する 🗑️</button>
 </div>
 
@@ -271,7 +274,43 @@ inputs.forEach((input, index) => {
   input.addEventListener("input", calcAll);
 });
 
-window.onload = () => { load(); calcAll(); };
+// PWAインストール制御
+let deferredPrompt;
+const installBtn = document.getElementById('install-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // インストール済みでなければ表示
+  if (!window.matchMedia('(display-mode: standalone)').matches) {
+    installBtn.style.display = 'inline-block';
+  }
+});
+
+installBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      installBtn.style.display = 'none';
+    }
+    deferredPrompt = null;
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  installBtn.style.display = 'none';
+  deferredPrompt = null;
+});
+
+// 起動時にすでにスタンドアロンモードなら隠す
+window.onload = () => { 
+  load(); 
+  calcAll(); 
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+    installBtn.style.display = 'none';
+  }
+};
 
 if ('service-worker' in navigator) {
   window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
