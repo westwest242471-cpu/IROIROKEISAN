@@ -15,357 +15,295 @@
     --text-color: #4b2c20;
     --border-color: #ffe082;
   }
-
-  html, body {
-    overscroll-behavior-y: contain;
-    overflow-x: hidden;
-    height: 100%;
-  }
-
-  body {
-    font-family: "Hiragino Maru Gothic ProN", "Meiryo", sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0; padding: 10px; padding-bottom: 80px;
-  }
-
-  .char { position: fixed; font-size: 2rem; z-index: -1; opacity: 0.4; pointer-events: none; }
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    50% { transform: translate(15px, 30px) rotate(5deg); }
-  }
-  .c1 { top: 10%; left: 5%; animation: float 6s infinite ease-in-out; }
-  .c2 { top: 50%; right: 5%; animation: float 8s infinite ease-in-out; }
-
+  html, body { overscroll-behavior-y: contain; overflow-x: hidden; height: 100%; }
+  body { font-family: "Hiragino Maru Gothic ProN", sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 10px; padding-bottom: 40px; }
   h1 { text-align: center; font-size: 1.2rem; color: var(--primary-color); margin: 10px 0; }
-
-  .section {
-    background: var(--card-bg); border-radius: 15px; box-shadow: 0 3px 0 var(--border-color);
-    margin-bottom: 8px; overflow: hidden; border: 2px solid var(--border-color);
-  }
-  .section h2 {
-    margin: 0; padding: 10px 15px; font-size: 0.95rem; background: #fff; cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center; color: var(--primary-color);
-  }
+  .section { background: var(--card-bg); border-radius: 15px; margin-bottom: 8px; overflow: hidden; border: 2px solid var(--border-color); box-shadow: 0 3px 0 var(--border-color); }
+  .section h2 { margin: 0; padding: 10px 15px; font-size: 0.95rem; background: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--primary-color); }
   .content { display: none; padding: 8px; border-top: 1px solid var(--border-color); background: #fff; }
   .section.open .content { display: block; }
-
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 6px; }
-
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
   .input-group { margin-bottom: 4px; }
   .input-group label { display: block; font-size: 0.7rem; font-weight: bold; margin-bottom: 2px; color: #8d6e63; }
-  input { width: 100%; font-size: 16px; padding: 7px; border: 2px solid #eee; border-radius: 8px; outline: none; box-sizing: border-box; }
-  input:focus { border-color: var(--primary-color); background: #fffdf0; }
-
-  .manual-input { background: #fffdf0; border: 2px solid #f1c40f; }
-
-  .res-box-screenshot {
-    background: #fff4e5; padding: 10px; border-radius: 12px; margin-top: 5px;
-    border: 2px dashed var(--primary-color); display: flex; justify-content: space-around; align-items: center;
-  }
-  .res-item { text-align: center; }
-  .res-label { font-size: 0.6rem; color: #a0522d; margin-bottom: 2px; }
-  .res-val { font-size: 0.95rem; font-weight: bold; color: #d35400; }
-  .unit { font-size: 0.7rem; color: #8d6e63; margin-left: 2px; font-weight: normal; }
+  input, select { width: 100%; font-size: 16px; padding: 7px; border: 2px solid #eee; border-radius: 8px; outline: none; box-sizing: border-box; background: white; }
+  .res-box-screenshot { background: #fff4e5; padding: 10px; border-radius: 12px; margin-top: 5px; border: 2px dashed var(--primary-color); display: none; justify-content: space-around; align-items: center; }
+  .res-val { font-size: 0.95rem; font-weight: bold; color: #d35400; width: 100%; text-align: center; }
   .highlight { color: #e74c3c; font-size: 1.1rem; border-bottom: 2px solid; }
 
-  /* 電卓 */
-  .calc-container { max-width: 280px; margin: 5px auto; background: #ffcc80; padding: 8px; border-radius: 15px; }
-  #calc-display { width: 100%; height: 40px; background: #fff; text-align: right; font-size: 20px; padding: 5px; border-radius: 8px; margin-bottom: 8px; border: 2px solid #ffb74d; box-sizing: border-box; }
-  .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
-  .calc-btn { height: 40px; font-size: 16px; font-weight: bold; border-radius: 8px; border: none; background: #fff; color: #ff8c00; box-shadow: 0 2px 0 #ffe082; }
+  /* 電卓スタイル */
+  .calc-container { width: 100%; max-width: 320px; margin: 0 auto; background: #1a1a1a; padding: 15px; border-radius: 20px; color: #fff; }
+  .calc-display-area { text-align: right; padding: 10px; min-height: 80px; display: flex; flex-direction: column; justify-content: flex-end; }
+  #calc-formula { font-size: 1.4rem; color: #fff; word-wrap: break-word; min-height: 1.6rem; }
+  #calc-realtime-res { font-size: 1.1rem; color: #888; min-height: 1.2rem; }
+  .calc-tool-bar { display: flex; justify-content: space-between; padding: 5px 10px; border-bottom: 1px solid #333; margin-bottom: 10px; color: #4caf50; font-size: 0.9rem; }
+  .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .calc-btn { height: 55px; font-size: 1.3rem; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; background: #333; color: #fff; }
+  .btn-op { background: #1a1a1a; color: #4caf50; font-size: 1.5rem; }
+  .btn-func { background: #1a1a1a; color: #e57373; }
+  .btn-equal { background: #2e7d32; color: #fff; }
+  #calc-history-list { font-size: 0.85rem; color: #bbb; max-height: 180px; overflow-y: auto; border-bottom: 1px solid #333; margin-bottom: 10px; padding: 5px; display: none; text-align: left; }
+  .history-item { border-bottom: 1px solid #444; padding: 8px 0; }
+  .history-memo { width: 100%; background: #222; border: 1px solid #444; color: #4caf50; font-size: 0.75rem; padding: 4px; border-radius: 4px; margin-top: 4px; }
 
-  /* 生産性ウォッチ追加スタイル */
+  /* ウォッチ */
   #timeDisplay { font-family: monospace; font-size: 2.2rem; font-weight: bold; text-align: center; background: #495057; color: #ccff00; padding: 8px 0; border-radius: 12px; margin-bottom: 10px; }
-  .watch-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-  .btn-watch { font-weight: bold; border: none; border-radius: 50px; color: white; cursor: pointer; padding: 12px 0; }
+  .btn-watch { font-weight: bold; border: none; border-radius: 50px; color: white; padding: 12px 0; width: 100%; margin-bottom: 5px; cursor: pointer; }
   .btn-start { background: #ff922b; }
   .btn-stop { background: #fa5252; }
-  .btn-reset-watch { background: #22b8cf; grid-column: span 2; padding: 6px; font-size: 0.8rem; }
-
-  /* モーダル & リセットエリア */
-  .reset-area { text-align: center; margin-top: 20px; padding-bottom: 20px; }
-  .reset-btn { background: #ff5252; color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 0 #c0392b; cursor: pointer; transition: 0.2s; }
-  .reset-btn:active { transform: scale(0.95); box-shadow: none; }
-  .install-btn { background: #27ae60; box-shadow: 0 4px 0 #1e8449; margin-bottom: 15px; }
-
-  #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(2px); }
-  #confirm-modal { background: #fff; width: 85%; max-width: 320px; border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transform: translateY(20px); transition: 0.3s; }
-  #modal-overlay.show { display: flex; }
-  #modal-overlay.show #confirm-modal { transform: translateY(0); }
-  .modal-title { font-size: 1.1rem; font-weight: bold; color: #d35400; margin-bottom: 10px; }
-  .modal-text { font-size: 0.85rem; color: #8d6e63; margin-bottom: 20px; line-height: 1.5; }
-  .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .m-btn { padding: 12px; border-radius: 10px; border: none; font-weight: bold; font-size: 0.9rem; cursor: pointer; }
-  .m-cancel { background: #eee; color: #777; }
-  .m-ok { background: #ff5252; color: #fff; box-shadow: 0 3px 0 #c0392b; }
+  .footer { text-align: center; margin-top: 30px; color: #a8a8a8; font-size: 0.7rem; }
 </style>
 </head>
 <body>
 
-<div class="char c1">&#x1F359;</div>
-<div class="char c2">&#x1F364;</div>
-
 <h1>食品工場計算ツール Pro &#x1F359;</h1>
 
-<div class="section"><h2 onclick="toggle(this)">① 終了予定・所要時間 &#x231B;</h2><div class="content"><div class="grid-2"><div class="input-group"><label>製造数</label><input type="number" id="targetQty"></div><div class="input-group"><label>能力</label><input type="number" id="speedPerHour"></div></div><div class="res-box-screenshot" id="res6-box" style="display:none;"><div id="result6" class="res-val" style="width:100%"></div></div></div></div>
-<div class="section"><h2 onclick="toggle(this)">② 生産性実績 &#x23F1;</h2><div class="content"><div class="grid-3"><div class="input-group"><label>製造数</label><input type="number" id="qty"></div><div class="input-group"><label>開始</label><input type="time" id="start"></div><div class="input-group"><label>終了</label><input type="time" id="end"></div></div><div class="res-box-screenshot" id="res1-box" style="display:none;"><div id="result1" class="res-val"></div></div></div></div>
-<div class="section"><h2 onclick="toggle(this)">③ タマドリ &#x1F4E6;</h2><div class="content"><div class="grid-2"><div class="input-group"><label>総数(個)</label><input type="number" id="tamaTotal"></div><div class="input-group"><label>入り数</label><input type="number" id="tamaPerVat"></div></div><div class="res-box-screenshot" id="res5-box" style="display:none;"><div id="result5" class="res-val"></div></div></div></div>
-<div class="section"><h2 onclick="toggle(this)">④ 必要バット数 &#x2696;</h2><div class="content"><div class="grid-3"><div class="input-group"><label>予定食数</label><input type="number" id="meals"></div><div class="input-group"><label>1食量</label><input type="number" id="perMeal" step="0.001"></div><div class="input-group"><label>バット規定</label><input type="number" id="perVat" step="0.01"></div></div><div class="res-box-screenshot" id="res2-box" style="display:none;"><div id="result2" class="res-val"></div></div></div></div>
-<div class="section"><h2 onclick="toggle(this)">⑤ 在庫・総数 &#x1F522;</h2><div class="content"><div class="grid-3"><div class="input-group"><label>バット枚数</label><input type="number" id="vatCount"></div><div class="input-group"><label>1枚量</label><input type="number" id="inPerVat"></div><div class="input-group"><label>端数</label><input type="number" id="extraCount"></div></div><div class="res-box-screenshot" id="res3-box" style="display:none;"><div id="result3" class="res-val"></div></div></div></div>
-
 <div class="section">
-  <h2 onclick="toggle(this)">⑥ 使用率レポート &#x1F4C8;</h2>
-  <div class="content" style="background: #fffdf9;">
+  <h2 onclick="toggle(this)">① 終了予定・所要時間 &#x231B;</h2>
+  <div class="content">
     <div class="grid-2">
-      <div class="input-group"><label>品名</label><input type="text" id="itemName"></div>
-      <div class="input-group"><label>具材</label><input type="text" id="ingName"></div>
+      <div class="input-group"><label>製造数</label><input type="number" id="targetQty" oninput="calcAll()"></div>
+      <div class="input-group"><label>能力(食/h)</label><input type="number" id="speedPerHour" oninput="calcAll()"></div>
     </div>
-    <div class="grid-3">
-      <div class="input-group"><label>製造数(食)</label><input type="number" id="useMeals"></div>
-      <div class="input-group"><label>1食(kg/個)</label><input type="number" id="kgPerMeal" step="0.001"></div>
-      <div class="input-group"><label style="color:#d35400">理論必要量(kg/個)</label><input type="number" id="manualReq" step="0.001" class="manual-input" placeholder="手入力優先"></div>
-    </div>
-    <div class="grid-3">
-      <div class="input-group"><label>払出(kg/個)</label><input type="number" id="paidKg" step="0.01"></div>
-      <div class="input-group"><label>余り(kg/個)</label><input type="number" id="leftKg" step="0.01"></div>
-      <div class="input-group"><label>追加(kg/個)</label><input type="number" id="addKg" step="0.01"></div>
-    </div>
-    <div class="res-box-screenshot" id="res4-box" style="display:none;">
-      <div class="res-item"><div class="res-label">理論必要量</div><div id="displayReq" class="res-val"></div></div>
-      <div class="res-item"><div class="res-label">実使用量</div><div id="actVal" class="res-val"></div></div>
-      <div class="res-item"><div class="res-label">使用率</div><div id="rateVal" class="highlight"></div></div>
-    </div>
+    <div class="res-box-screenshot" id="res-box-1"><div id="res-val-1" class="res-val"></div></div>
   </div>
 </div>
 
-<div class="section"><h2 onclick="toggle(this)">⑦ 電卓 &#x1F4F1;</h2><div class="content"><div class="calc-container"><div id="calc-display">0</div><div class="calc-buttons"><button class="calc-btn" style="background:#ff5252;color:#fff" onclick="clearCalc()">C</button><button class="calc-btn" onclick="appendCalc('/')">/</button><button class="calc-btn" onclick="appendCalc('*')">*</button><button class="calc-btn" onclick="appendCalc('-')">-</button><button class="calc-btn" onclick="appendCalc('7')">7</button><button class="calc-btn" onclick="appendCalc('8')">8</button><button class="calc-btn" onclick="appendCalc('9')">9</button><button class="calc-btn" onclick="appendCalc('+')">+</button><button class="calc-btn" onclick="appendCalc('4')">4</button><button class="calc-btn" onclick="appendCalc('5')">5</button><button class="calc-btn" onclick="appendCalc('6')">6</button><button class="calc-btn" style="background:#ff8c00;color:#fff;grid-row:span 2;height:84px" onclick="calcResult()">=</button><button class="calc-btn" onclick="appendCalc('1')">1</button><button class="calc-btn" onclick="appendCalc('2')">2</button><button class="calc-btn" onclick="appendCalc('3')">3</button><button class="calc-btn" style="grid-column:span 2" onclick="appendCalc('0')">0</button><button class="calc-btn" onclick="appendCalc('.')">.</button></div></div></div></div>
+<div class="section">
+  <h2 onclick="toggle(this)">② 生産性実績 &#x23F1;</h2>
+  <div class="content">
+    <div class="grid-2">
+      <div class="input-group"><label>製造数</label><input type="number" id="qty" oninput="calcAll()"></div>
+      <div class="input-group"><label>直打ち(分) 優先</label><input type="number" id="manualMinutes" placeholder="例: 45" oninput="calcAll()" style="background:#fffdf0;"></div>
+    </div>
+    <div class="grid-2" style="margin-top:5px;">
+      <div class="input-group"><label>開始 (24h)</label><div style="display:flex; gap:2px;"><select id="startH" onchange="calcAll()"></select>:<select id="startM" onchange="calcAll()"></select></div></div>
+      <div class="input-group"><label>終了 (24h)</label><div style="display:flex; gap:2px;"><select id="endH" onchange="calcAll()"></select>:<select id="endM" onchange="calcAll()"></select></div></div>
+    </div>
+    <div class="res-box-screenshot" id="res-box-2"><div id="res-val-2" class="res-val"></div></div>
+  </div>
+</div>
 
 <div class="section">
-  <h2 onclick="toggle(this)">⑧ 生産性ウォッチ &#x23F1;</h2>
+  <h2 onclick="toggle(this)">③ タマドリ &#x1F4E6;</h2>
   <div class="content">
-    <div id="timeDisplay">00:00.00</div>
-    <div class="watch-controls">
-      <button class="btn-watch btn-start" onclick="startTimer()">START</button>
-      <button class="btn-watch btn-stop" onclick="stopTimer()">STOP</button>
-      <button class="btn-watch btn-reset-watch" onclick="resetTimer()">リセット</button>
+    <div class="grid-2">
+      <div class="input-group"><label>総数(個)</label><input type="number" id="tamaTotal" oninput="calcAll()"></div>
+      <div class="input-group"><label>入り数</label><input type="number" id="tamaPerVat" oninput="calcAll()"></div>
     </div>
-    <div class="input-group">
-      <label>製造個数</label>
-      <input type="number" id="watchCount" placeholder="個数を入力" inputmode="numeric">
+    <div class="res-box-screenshot" id="res-box-3"><div id="res-val-3" class="res-val"></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 onclick="toggle(this)">④ 必要バット数 &#x2696;</h2>
+  <div class="content">
+    <div class="grid-3">
+      <div class="input-group"><label>予定食数</label><input type="number" id="meals" oninput="calcAll()"></div>
+      <div class="input-group"><label>1食量(kg)</label><input type="number" id="perMeal" step="0.001" oninput="calcAll()"></div>
+      <div class="input-group"><label>バット規定</label><input type="number" id="perVat" step="0.01" oninput="calcAll()"></div>
     </div>
-    <div class="res-box-screenshot" id="watch-res-box" style="display:none;">
-      <div class="res-item">
-        <div class="res-label">推定生産性</div>
-        <div id="watchResult" class="res-val">---<span class="res-unit">個/h</span></div>
+    <div class="res-box-screenshot" id="res-box-4"><div id="res-val-4" class="res-val"></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 onclick="toggle(this)">⑤ 在庫・総数 &#x1F522;</h2>
+  <div class="content">
+    <div class="grid-3">
+      <div class="input-group"><label>枚数</label><input type="number" id="vatCount" oninput="calcAll()"></div>
+      <div class="input-group"><label>1枚量</label><input type="number" id="inPerVat" oninput="calcAll()"></div>
+      <div class="input-group"><label>端数</label><input type="number" id="extraCount" oninput="calcAll()"></div>
+    </div>
+    <div class="res-box-screenshot" id="res-box-5"><div id="res-val-5" class="res-val"></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 onclick="toggle(this)">⑥ 使用率レポート &#x1F4C8;</h2>
+  <div class="content">
+    <div class="grid-3">
+      <div class="input-group"><label>製造数</label><input type="number" id="useMeals" oninput="calcAll()"></div>
+      <div class="input-group"><label>1食量</label><input type="number" id="kgPerMeal" step="0.001" oninput="calcAll()"></div>
+      <div class="input-group"><label>理論必要</label><input type="number" id="manualReq" step="0.001" oninput="calcAll()"></div>
+    </div>
+    <div class="grid-3">
+      <div class="input-group"><label>払出</label><input type="number" id="paidKg" step="0.01" oninput="calcAll()"></div>
+      <div class="input-group"><label>余り</label><input type="number" id="leftKg" step="0.01" oninput="calcAll()"></div>
+      <div class="input-group"><label>追加</label><input type="number" id="addKg" step="0.01" oninput="calcAll()"></div>
+    </div>
+    <div class="res-box-screenshot" id="res-box-6"><div id="res-val-6" class="res-val"></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 onclick="toggle(this)">⑦ 簡易電卓 &#x1F4F1;</h2>
+  <div class="content">
+    <div class="calc-container">
+      <div id="calc-history-list"></div>
+      <div class="calc-display-area"><div id="calc-formula"></div><div id="calc-realtime-res"></div></div>
+      <div class="calc-tool-bar"><span onclick="toggleHistory()">🕒 履歴(メモ可)</span><span onclick="backspaceCalc()">⌫</span></div>
+      <div class="calc-buttons">
+        <button class="calc-btn btn-func" onclick="clearCalc()">C</button>
+        <button class="calc-btn btn-op" onclick="appendCalc('(')">(</button><button class="calc-btn btn-op" onclick="appendCalc(')')">)</button><button class="calc-btn btn-op" onclick="appendCalc('/')">÷</button>
+        <button class="calc-btn" onclick="appendCalc('7')">7</button><button class="calc-btn" onclick="appendCalc('8')">8</button><button class="calc-btn" onclick="appendCalc('9')">9</button><button class="calc-btn btn-op" onclick="appendCalc('*')">×</button>
+        <button class="calc-btn" onclick="appendCalc('4')">4</button><button class="calc-btn" onclick="appendCalc('5')">5</button><button class="calc-btn" onclick="appendCalc('6')">6</button><button class="calc-btn btn-op" onclick="appendCalc('-')">−</button>
+        <button class="calc-btn" onclick="appendCalc('1')">1</button><button class="calc-btn" onclick="appendCalc('2')">2</button><button class="calc-btn" onclick="appendCalc('3')">3</button><button class="calc-btn btn-op" onclick="appendCalc('+')">+</button>
+        <button class="calc-btn" onclick="appendCalc('0')">0</button><button class="calc-btn" onclick="appendCalc('.')">.</button><button class="calc-btn btn-op" onclick="backspaceCalc()">⌫</button><button class="calc-btn btn-equal" onclick="finishCalc()">=</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="reset-area">
-  <button id="install-btn" class="reset-btn install-btn" style="display:none;">アプリをホーム画面に追加 📲</button>
-  <br>
-  <button class="reset-btn" onclick="showModal()">データを全消去する 🗑️</button>
-</div>
-
-<div id="modal-overlay">
-  <div id="confirm-modal">
-    <div class="modal-title">リセットしますか？</div>
-    <div class="modal-text">入力されたすべてのデータが消去されます。<br>よろしいですか？</div>
-    <div class="modal-btns">
-      <button class="m-btn m-cancel" onclick="hideModal()">やめる</button>
-      <button class="m-btn m-ok" onclick="allReset()">消去する</button>
-    </div>
+<div class="section">
+  <h2 onclick="toggle(this)">⑧ 生産性ウォッチ &#x23F1;</h2>
+  <div class="content">
+    <div id="timeDisplay">00:00.00</div>
+    <div class="grid-2"><button class="btn-watch btn-start" onclick="startTimer()">START</button><button class="btn-watch btn-stop" onclick="stopTimer()">STOP</button></div>
+    <button class="btn-watch" style="background:#22b8cf;font-size:0.8rem;" onclick="resetTimer()">リセット</button>
+    <div class="input-group" style="margin-top:10px;"><label>製造個数</label><input type="number" id="watchCount" oninput="calcWatch()"></div>
+    <div class="res-box-screenshot" id="res-box-watch"><div id="res-val-watch" class="res-val"></div></div>
   </div>
 </div>
 
+<div class="footer">制作者: 1F加工西<br>ver 4.6</div>
+
 <script>
 function toggle(e) { e.parentElement.classList.toggle("open"); }
-function save() { document.querySelectorAll("input").forEach(i => { if(i.id!=="watchCount") localStorage.setItem(i.id, i.value); }); }
-function load() { document.querySelectorAll("input").forEach(i => { if(i.id!=="watchCount" && localStorage.getItem(i.id)) i.value = localStorage.getItem(i.id); }); }
 
-function fmt(num) {
-  if (isNaN(num) || num === Infinity) return "0";
-  const truncated = Math.floor(num * 100) / 100;
-  return Number(truncated).toString();
-}
-
-function showModal() { document.getElementById("modal-overlay").classList.add("show"); }
-function hideModal() { document.getElementById("modal-overlay").classList.remove("show"); }
-
-function allReset() {
-  localStorage.clear();
-  document.querySelectorAll("input").forEach(i => i.value = "");
-  resetTimer(); // ウォッチもリセット
-  hideModal();
-  calcAll();
-}
+const hSelects = [document.getElementById('startH'), document.getElementById('endH')];
+const mSelects = [document.getElementById('startM'), document.getElementById('endM')];
+hSelects.forEach(s => { for(let i=0; i<24; i++) s.add(new Option(String(i).padStart(2,'0'), i)); });
+mSelects.forEach(s => { for(let i=0; i<60; i++) s.add(new Option(String(i).padStart(2,'0'), i)); });
 
 function calcAll() {
   // ① 終了予定
   const tQ = parseFloat(document.getElementById("targetQty").value);
   const sp = parseFloat(document.getElementById("speedPerHour").value);
+  const r1 = document.getElementById("res-box-1");
   if (tQ && sp > 0) {
-    const th = tQ / sp; const d = new Date(); d.setMinutes(d.getMinutes() + (th * 60));
-    document.getElementById("result6").innerHTML = `あと <span class="highlight">${Math.floor(th)}h ${Math.round((th%1)*60)}m</span> / 終了 <span class="highlight">${d.getHours()}:${("0"+d.getMinutes()).slice(-2)}</span>`;
-    document.getElementById("res6-box").style.display = "flex";
-  } else document.getElementById("res6-box").style.display = "none";
+    const hours = tQ / sp; const d = new Date(); d.setMinutes(d.getMinutes() + (hours * 60));
+    document.getElementById("res-val-1").innerHTML = `あと <span class="highlight">${Math.floor(hours)}h ${Math.round((hours%1)*60)}m</span> / 終了 <span class="highlight">${d.getHours()}:${("0"+d.getMinutes()).slice(-2)}</span>`;
+    r1.style.display = "flex";
+  } else r1.style.display = "none";
 
-  // ② 生産性
+  // ② 生産性実績
   const q2 = parseFloat(document.getElementById("qty").value);
-  const sT = document.getElementById("start").value;
-  const eT = document.getElementById("end").value;
-  if (q2 && sT && eT) {
-    const [sh, sm] = sT.split(":").map(Number); const [eh, em] = eT.split(":").map(Number);
-    let diff = (eh * 60 + em) - (sh * 60 + sm); if (diff <= 0) diff += 1440;
-    document.getElementById("result1").innerHTML = `生産性: <span class="highlight">${fmt(q2 / (diff / 60))}</span> 食/h`;
-    document.getElementById("res1-box").style.display = "flex";
-  } else document.getElementById("res1-box").style.display = "none";
+  const mMin = parseFloat(document.getElementById("manualMinutes").value);
+  const r2 = document.getElementById("res-box-2");
+  let totalMin = 0;
+  if (!isNaN(mMin) && mMin > 0) totalMin = mMin;
+  else {
+    const sh = parseInt(document.getElementById("startH").value); const sm = parseInt(document.getElementById("startM").value);
+    const eh = parseInt(document.getElementById("endH").value); const em = parseInt(document.getElementById("endM").value);
+    totalMin = (eh * 60 + em) - (sh * 60 + sm); if (totalMin <= 0) totalMin += 1440;
+  }
+  if (q2 && totalMin > 0) {
+    document.getElementById("res-val-2").innerHTML = `実績: <span class="highlight">${(q2 / (totalMin / 60)).toFixed(1)}</span> 食/h <small>(${totalMin}分間)</small>`;
+    r2.style.display = "flex";
+  } else r2.style.display = "none";
 
   // ③ タマドリ
   const tt3 = parseInt(document.getElementById("tamaTotal").value);
   const tp3 = parseInt(document.getElementById("tamaPerVat").value);
+  const r3 = document.getElementById("res-box-3");
   if (tt3 && tp3 > 0) {
-    document.getElementById("result5").innerHTML = `満杯: <span class="highlight">${Math.floor(tt3/tp3)}</span> / 端: <span class="highlight">${tt3%tp3}</span>`;
-    document.getElementById("res5-box").style.display = "flex";
-  } else document.getElementById("res5-box").style.display = "none";
+    document.getElementById("res-val-3").innerHTML = `満杯: <span class="highlight">${Math.floor(tt3/tp3)}</span> / 端数: <span class="highlight">${tt3%tp3}</span>`;
+    r3.style.display = "flex";
+  } else r3.style.display = "none";
 
-  // ④ 必要バット数
+  // ④ 必要バット数 (小数点第1位まで表示に修正)
   const m4 = parseFloat(document.getElementById("meals").value);
   const pm4 = parseFloat(document.getElementById("perMeal").value);
   const pv4 = parseFloat(document.getElementById("perVat").value);
+  const r4 = document.getElementById("res-box-4");
   if (m4 && pm4 && pv4 > 0) {
-    const tot = m4 * pm4;
-    document.getElementById("result2").innerHTML = `総量:${fmt(tot)} / 必要:<span class="highlight">${fmt(Math.ceil((tot/pv4)*10)/10)}</span>枚`;
-    document.getElementById("res2-box").style.display = "flex";
-  } else document.getElementById("res2-box").style.display = "none";
+    const val = (m4 * pm4) / pv4;
+    document.getElementById("res-val-4").innerHTML = `必要枚数: <span class="highlight">${val.toFixed(1)}</span> 枚`;
+    r4.style.display = "flex";
+  } else r4.style.display = "none";
 
-  // ⑤ 在庫総数
+  // ⑤ 在庫・総数
   const vc5 = parseFloat(document.getElementById("vatCount").value);
   const ipv5 = parseFloat(document.getElementById("inPerVat").value);
   const ex5 = parseFloat(document.getElementById("extraCount").value) || 0;
+  const r5 = document.getElementById("res-box-5");
   if (vc5 && ipv5) {
-    document.getElementById("result3").innerHTML = `合計: <span class="highlight">${fmt(vc5 * ipv5 + ex5)}</span> kg/個`;
-    document.getElementById("res3-box").style.display = "flex";
-  } else document.getElementById("res3-box").style.display = "none";
+    document.getElementById("res-val-5").innerHTML = `合計総数: <span class="highlight">${(vc5 * ipv5 + ex5).toFixed(2)}</span>`;
+    r5.style.display = "flex";
+  } else r5.style.display = "none";
 
   // ⑥ 使用率
-  const uM = parseFloat(document.getElementById("useMeals").value);
-  const kM = parseFloat(document.getElementById("kgPerMeal").value);
-  const mR = parseFloat(document.getElementById("manualReq").value);
-  const pK = parseFloat(document.getElementById("paidKg").value);
-  const lK = parseFloat(document.getElementById("leftKg").value) || 0;
-  const aK = parseFloat(document.getElementById("addKg").value) || 0;
-  let finalReq = !isNaN(mR) ? mR : (uM * kM);
-  if (finalReq > 0 && !isNaN(pK)) {
-    const act = pK + aK - lK;
-    document.getElementById("displayReq").innerHTML = `${fmt(finalReq)}<span class="unit">kg/個</span>`;
-    document.getElementById("actVal").innerHTML = `${fmt(act)}<span class="unit">kg/個</span>`;
-    document.getElementById("rateVal").textContent = fmt((act/finalReq)*100) + "%";
-    document.getElementById("res4-box").style.display = "flex";
-  } else document.getElementById("res4-box").style.display = "none";
-  save();
+  const um6 = parseFloat(document.getElementById("useMeals").value);
+  const km6 = parseFloat(document.getElementById("kgPerMeal").value);
+  const mr6 = parseFloat(document.getElementById("manualReq").value);
+  const pk6 = parseFloat(document.getElementById("paidKg").value);
+  const lk6 = parseFloat(document.getElementById("leftKg").value) || 0;
+  const ak6 = parseFloat(document.getElementById("addKg").value) || 0;
+  const r6 = document.getElementById("res-box-6");
+  let theoretical = !isNaN(mr6) ? mr6 : (um6 * km6);
+  if (theoretical > 0 && !isNaN(pk6)) {
+    const actual = pk6 + ak6 - lk6;
+    document.getElementById("res-val-6").innerHTML = `使用率: <span class="highlight">${((actual / theoretical) * 100).toFixed(1)}%</span>`;
+    r6.style.display = "flex";
+  } else r6.style.display = "none";
+
+  document.querySelectorAll("input:not(.history-memo), select").forEach(i => { if(i.id!=="watchCount") localStorage.setItem(i.id, i.value); });
 }
 
-// --- 生産性ウォッチ ロジック ---
-let watchStartTime = null;
-let watchInterval = null;
-let watchElapsedMs = 0;
-
-function updateWatchDisplay() {
-  const ms = watchElapsedMs;
-  const mins = Math.floor((ms % 3600000) / 60000);
-  const secs = Math.floor((ms % 60000) / 1000);
-  const cs = Math.floor((ms % 1000) / 10);
-  document.getElementById("timeDisplay").textContent = 
-    String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0") + "." + String(cs).padStart(2, "0");
+// 電卓ロジック
+let formula = "";
+let historyData = JSON.parse(localStorage.getItem('calcHistoryData')) || [];
+function appendCalc(c) { formula += c; updateCalcDisplay(); }
+function clearCalc() { formula = ""; updateCalcDisplay(); }
+function backspaceCalc() { formula = formula.slice(0, -1); updateCalcDisplay(); }
+function updateCalcDisplay() {
+  document.getElementById("calc-formula").innerText = formula.replace(/\*/g,'×').replace(/\//g,'÷') || "0";
+  try { if(formula) { const res = eval(formula); document.getElementById("calc-realtime-res").innerText = isNaN(res) ? "" : res.toLocaleString(); } else document.getElementById("calc-realtime-res").innerText = ""; } catch(e) {}
 }
-
-function startTimer() {
-  if (watchInterval) return;
-  watchStartTime = Date.now() - watchElapsedMs;
-  watchInterval = setInterval(() => {
-    watchElapsedMs = Date.now() - watchStartTime;
-    updateWatchDisplay();
-    calcWatch();
-  }, 10);
-}
-
-function stopTimer() {
-  clearInterval(watchInterval);
-  watchInterval = null;
-}
-
-function resetTimer() {
-  stopTimer();
-  watchElapsedMs = 0;
-  document.getElementById("watchCount").value = "";
-  updateWatchDisplay();
-  document.getElementById("watchResult").innerHTML = '---<span class="res-unit">個/h</span>';
-  document.getElementById("watch-res-box").style.display = "none";
-}
-
-function calcWatch() {
-  const count = Number(document.getElementById("watchCount").value);
-  if (count > 0 && watchElapsedMs > 0) {
-    const hours = watchElapsedMs / 3600000;
-    const prod = (count / hours).toFixed(1);
-    document.getElementById("watchResult").innerHTML = `<span class="highlight">${prod}</span> <span class="res-unit">個/h</span>`;
-    document.getElementById("watch-res-box").style.display = "flex";
-  }
-}
-document.getElementById("watchCount").addEventListener("input", calcWatch);
-
-// --- 電卓ロジック ---
-let calcExp = "";
-function appendCalc(v) { calcExp += v; document.getElementById("calc-display").innerText = calcExp; }
-function clearCalc() { calcExp = ""; document.getElementById("calc-display").innerText = "0"; }
-function calcResult() { try { calcExp = eval(calcExp).toString(); document.getElementById("calc-display").innerText = calcExp; } catch { clearCalc(); } }
-
-// 入力イベント
-const inputs = Array.from(document.querySelectorAll("input"));
-inputs.forEach((input, index) => {
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const next = inputs[index + 1];
-      if (next) {
-        const parentSection = next.closest(".section");
-        if (parentSection && !parentSection.classList.contains("open")) parentSection.classList.add("open");
-        next.focus();
-      } else input.blur();
+function finishCalc() {
+  try {
+    const res = eval(formula);
+    if(res !== undefined) {
+      historyData.unshift({ f: formula.replace(/\*/g,'×').replace(/\//g,'÷'), r: res.toLocaleString(), m: "" });
+      if(historyData.length > 10) historyData.pop();
+      localStorage.setItem('calcHistoryData', JSON.stringify(historyData));
+      formula = res.toString(); updateCalcDisplay(); document.getElementById("calc-realtime-res").innerText = ""; updateHistoryView();
     }
-  });
-  input.addEventListener("input", calcAll);
-});
-
-// PWA関連
-let deferredPrompt;
-const installBtn = document.getElementById('install-btn');
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault(); deferredPrompt = e;
-  if (!window.matchMedia('(display-mode: standalone)').matches) installBtn.style.display = 'inline-block';
-});
-installBtn.addEventListener('click', async () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') installBtn.style.display = 'none';
-    deferredPrompt = null;
-  }
-});
-window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; });
-
-window.onload = () => { 
-  load(); calcAll(); 
-  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) installBtn.style.display = 'none';
-};
-
-if ('service-worker' in navigator) {
-  window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
+  } catch(e) { alert("式エラー"); }
 }
+function updateHistoryView() {
+  document.getElementById("calc-history-list").innerHTML = historyData.map((item, i) => `
+    <div class="history-item">
+      <div style="text-align:right;font-size:0.7rem;color:#888;">${item.f}</div>
+      <div style="text-align:right;font-weight:bold;">= ${item.r}</div>
+      <input type="text" class="history-memo" placeholder="メモ..." value="${item.m}" oninput="historyData[${i}].m=this.value; localStorage.setItem('calcHistoryData', JSON.stringify(historyData))">
+    </div>
+  `).join("");
+}
+function toggleHistory() { const h = document.getElementById("calc-history-list"); h.style.display = (h.style.display==="none"||h.style.display==="")?"block":"none"; if(h.style.display==="block") updateHistoryView(); }
+
+// ウォッチロジック
+let watchInterval = null, watchElapsedMs = 0;
+function startTimer() { if(!watchInterval) { let s = Date.now()-watchElapsedMs; watchInterval = setInterval(() => { watchElapsedMs = Date.now()-s; updateWatchDisplay(); calcWatch(); }, 10); } }
+function stopTimer() { clearInterval(watchInterval); watchInterval = null; }
+function resetTimer() { stopTimer(); watchElapsedMs = 0; updateWatchDisplay(); document.getElementById("res-box-watch").style.display="none"; }
+function updateWatchDisplay() {
+  const ms = watchElapsedMs; const m = Math.floor(ms/60000); const s = Math.floor((ms%60000)/1000); const c = Math.floor((ms%1000)/10);
+  document.getElementById("timeDisplay").textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(c).padStart(2,'0')}`;
+}
+function calcWatch() {
+  const c = parseFloat(document.getElementById("watchCount").value);
+  if(c > 0 && watchElapsedMs > 0) {
+    document.getElementById("res-val-watch").innerHTML = `生産性: <span class="highlight">${(c / (watchElapsedMs/3600000)).toFixed(1)}</span> 個/h`;
+    document.getElementById("res-box-watch").style.display = "flex";
+  }
+}
+
+window.onload = () => {
+  document.querySelectorAll("input:not(.history-memo), select").forEach(i => { if(localStorage.getItem(i.id)) i.value = localStorage.getItem(i.id); });
+  calcAll(); updateHistoryView();
+};
 </script>
 </body>
 </html>
