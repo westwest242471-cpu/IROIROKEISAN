@@ -1,4 +1,4 @@
-const CACHE_NAME = 'genba-calc-v4.9';
+const CACHE_NAME = 'genba-calc-v5';
 const urlsToCache = [
   './',
   './index.html',
